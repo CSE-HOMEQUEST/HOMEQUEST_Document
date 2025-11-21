@@ -1,0 +1,1420 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage[T1]{fontenc}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{array}
+\usepackage{float}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage{placeins} % ← 프리앰블에 추가
+\usepackage{listings}
+\usepackage{xcolor}
+
+
+\usepackage[compact]{titlesec}
+\titlespacing*{\section}{0pt}{1.5\baselineskip}{0.75\baselineskip}    % Section: 위 1.5줄, 아래 0.75줄
+\titlespacing*{\subsection}{0pt}{1.5\baselineskip}{0.6\baselineskip}  % Subsection: 위 1.5줄, 아래 0.6줄
+\setlist[itemize]{leftmargin=1.5em, itemsep=0.8em}                    % bullet 간격 통일
+\setlist[enumerate]{itemsep=0.9em, leftmargin=1.8em}                  % 숫자 리스트 간격 통일
+
+
+\setlength{\columnsep}{0.35in} 
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+
+
+
+\begin{document}
+
+
+% -----------------------------
+% Title & Authors
+% -----------------------------
+\title{HomeQuest}
+
+\author{
+\begin{tabular}{cccc}
+\textbf{Hyeonseo Shim} &
+\textbf{Sihyun Jang} &
+\textbf{Jin Yun} &
+\textbf{Yeonsoo Cho} \\
+\textit{Department of Information} &
+\textit{Department of Information} &
+\textit{Department of Information} &
+\textit{Department of Public} \\
+\textit{Systems} &
+\textit{Systems} &
+\textit{Systems} &
+\textit{Administration} \\
+Hanyang University & Hanyang University & Hanyang University & Hanyang University \\
+Seoul, Republic of Korea & Seoul, Republic of Korea & Seoul, Republic of Korea & Seoul, Republic of Korea \\
+hyeonseo321@gmail.com & jjj99nine2@hanyang.ac.kr & jinijini0402@hanyang.ac.kr & meriel1010@hanyang.ac.kr
+\end{tabular}
+}
+
+
+\maketitle
+
+% -----------------------------
+% Abstract
+% -----------------------------
+\begin{abstract}
+This study proposes a family-centered smart home service that transforms everyday appliance and wearable data into shared motivation and emotional connection. The system aggregates data from LG ThinQ devices, analyzes behavior patterns, and generates daily or weekly AI briefings that present both family progress and personal achievements. Through the Family Challenge System, members receive action-based goals in areas such as household chores, energy saving, and wellness. Upon achieving these goals, individual points are accumulated, and each ongoing family challenge is visualized through a character interface. Members can earn cumulative points by completing challenges and view family rankings based on their performance. This process turns raw data into a game-like and visually engaging experience that fosters participation and achievement within the household, extending smart homes beyond efficiency to become a data-driven yet emotionally meaningful space for family connection.
+\end{abstract}
+
+% ---------- 첫 번째 표 ----------
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.15}
+
+% ---- 캡션을 표 위 중앙에 직접 배치 ----
+\vspace{0.5em}
+\begin{center}
+\textbf{TABLE I.} \textit{Role Assignments}
+\end{center}
+\vspace{0.3em}
+
+\begin{tabular}{|p{0.22\linewidth}|p{0.18\linewidth}|p{0.52\linewidth}|}
+\hline
+\multicolumn{1}{|c|}{\textbf{Role}} &
+\multicolumn{1}{c|}{\textbf{Name}} &
+\multicolumn{1}{c|}{\textbf{Task Description}} \\ \hline
+
+Backend Developer & Yeonsoo Cho &
+The Backend Developer builds and manages server-side architecture, databases, and APIs that support the application’s core features. This includes designing efficient data models, implementing security and authentication, and ensuring reliable data exchange between systems. The developer enhances performance, scalability, and fault tolerance while maintaining documentation and monitoring. Through collaboration with frontend and AI teams, the backend developer ensures stable and efficient platform operations. \\ \hline
+
+AI Developer & Hyeonseo Shim &
+The AI Developer designs and implements intelligent systems that enhance the app’s personalization and decision-making capabilities. This involves collecting and preprocessing data, training and fine-tuning machine learning models, and deploying them through scalable APIs or pipelines. The developer evaluates model performance, iterates for improvement, and ensures seamless integration with backend and frontend systems. By combining data science and engineering practices, the AI Developer enables the application to deliver smarter, more adaptive user experiences and insights based on real-time data.\\ \hline
+\end{tabular}
+\end{table}
+
+% ---------- 두 번째 표 (continued) ----------
+\addtocounter{table}{-1}  % 같은 번호 유지
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{|p{0.22\linewidth}|p{0.18\linewidth}|p{0.52\linewidth}|}
+\hline
+\multicolumn{1}{|c|}{\textbf{Role}} &
+\multicolumn{1}{c|}{\textbf{Name}} &
+\multicolumn{1}{c|}{\textbf{Task Description}} \\ \hline
+
+Frontend Developer & Sihyun Jang &
+The UI/UX Designer is responsible for understanding user
+needs and transforming them into intuitive, user-centered designs. This role involves conducting user research, creating wireframes and interactive prototypes, and developing a consistent design system that aligns with the app’s identity. The designer ensures visual harmony, accessibility, and usability across all interfaces while collaborating closely with developers to maintain design accuracy during implementation. By continuously refining layouts and interaction flows, the designer contributes to creating a seamless and engaging overall user experience. \\ \hline
+
+Frontend Developer & Jin Yun &
+The Frontend Developer builds responsive, interactive, and visually precise user interfaces from design specifications. This includes creating components with modern frameworks, ensuring cross-device compatibility, and integrating backend APIs. The developer improves
+performance and accessibility, conducts testing and debugging, and maintains clean code. Collaborating with designers and backend teams, the frontend developer delivers a smooth and cohesive user experience from design to deployment. \\ \hline
+\end{tabular}
+\end{table}
+
+\section{Introduction}
+\subsection{Background}
+\textit{1) Smart homes have become deeply integrated into our daily lives, offering convenience and automation in many ways. However, most smart home data only shows the results of what has already happened through numbers and notifications. While users can review their activity outcomes, the data rarely helps them recognize or improve their living patterns. In fact, as smart homes provide more information, the gap between data and meaningful behavioral change continues to grow. We wanted to close this gap.}
+
+\textit{2) This realization naturally led us to focus on the idea of home as a shared space. Daily life is not created by individuals alone, but through the interactions and relationships among family members. Yet current smart home systems manage data on an individual basis, failing to reflect this interconnectedness. We believe smart homes should evolve into systems that allow families to recognize each other’s actions and grow together through shared feedback.}  
+
+\textit{3) From this perspective, we propose Familylog. This service analyzes data collected from LG ThinQ appliances and wearable devices to generate personalized reports and practical challenges that fit each family’s lifestyle. Small actions such as finishing the laundry, taking a walk together, or saving energy are recorded and connected, gradually becoming meaningful data-driven experiences in the family’s daily life. Beyond simply improving efficiency, our goal is to present a new direction for smart homes where data inspires action and action strengthens connection.}  
+
+\subsection{Problem Statement (Client’s Needs)}
+
+\begin{enumerate}[label=\textbf{(\alph*)}, itemsep=1.2em] 
+\item{Lack of Family Connection and Behavioral Change}\\
+Current smart home systems are primarily operated through individual user accounts, managing each member’s data separately. As a result, even though home appliances are shared devices used by the entire family, the collected data remains divided by individual and fails to connect the activities of different members. This separation makes it difficult to understand collective household patterns or identify shared goals, preventing the data from contributing to meaningful habit improvement or behavioral change. While smart homes effectively enhance personal efficiency and convenience, they show clear limitations in promoting family interaction and collaborative experiences.  
+
+
+\item{Need for Meaningful Data Experience}\\
+Current smart home systems, powered by IoT and AI technologies, collect and provide large amounts of data. However, users receive this information repeatedly without meaningful context. Notifications about laundry completion, energy consumption, or step counts accumulate over time, leading to information overload and increasing user fatigue. This constant flow of data diminishes interest and engagement, causing users to perceive the smart home merely as an automated tool rather than a supportive companion.  
+
+
+\item{Lack of Emotional Connection}\\
+The current smart home data environment focuses mainly on storing and displaying information, failing to capture the emotional flow or meaningful changes in daily life. In this fragmented structure, even when family members experience behavioral or lifestyle changes, the emotional meaning behind these actions is not shared, weakening the overall context of family life. While smart homes emphasize functional convenience, they lack mechanisms that foster emotional interaction and connection among family members. As a result, positive changes often fade unnoticed, and the family’s growth and shared experiences remain buried within disconnected data.  
+\end{enumerate}
+
+\subsection{Common Concepts and Object Definition}
+
+\begin{itemize}[leftmargin=1.5em, itemsep=0.8em]
+
+\item {Family:} 
+A container that groups family members. Each family entity maintains its own set of policies, including reward and penalty rules, cutoff times, and notification preferences.  
+
+\item {Member:} 
+An individual family participant who can be linked to one or more LG devices or wearables.  
+
+\item {Goal:} 
+A quantitative target defined at either the individual or family level (e.g., “Do laundry twice a week,” “Reduce family energy use by 10\%”). Each goal includes parameters such as duration (daily, weekly, or monthly), baseline values, measurement units, success criteria, and weighting or contribution rules.  
+
+\item {Challenge:} 
+An executable package composed of one or more goals. Challenges can be individual- or family joint-, and include details such as start and end dates, rewards and penalties, and verification methods.  
+
+\item {Metric:} 
+A standardized measurement unit used to quantify performance or behavior. Examples include laundry cycles (count), energy consumption (kWh), step count (steps), and cleaning area (m²).  
+
+\item {Event:} 
+A single recorded action triggered by a device, app, or voice command—for instance, completing a laundry cycle, starting or ending a robot vacuum session, pressing a confirmation button, or saying “I’m done.”  
+
+\end{itemize}
+
+\subsection{Research on Related Software and Algorithm}
+
+\begin{enumerate}[label=\textbf{(\alph*)}, itemsep=1.2em]
+
+% ---------- (a) ----------
+\item {Samsung SmartThings Energy [1]}
+
+\begin{enumerate}[label=\arabic*) , leftmargin=2.2em, itemsep=0.7em]
+
+\item {Function:}  
+Samsung SmartThings Energy automatically collects and analyzes power consumption data from home appliances to help users manage energy usage efficiently. Within the app, weekly and daily consumption patterns and reduction rates are visualized, accompanied by notifications such as “Power usage decreased by 8\% this week” and energy-saving tips. In addition, the system includes functions that automatically set energy-saving goals and provide personalized recommendations for more efficient usage.  
+
+\item {Similarity with Our Service:}  
+Similar to our service, SmartThings Energy analyzes lifestyle patterns based on appliance data and presents them in report form. Both services share the same objective of promoting efficient household behavior through data-driven and personalized feedback mechanisms.  
+
+\item {Difference from Our Service:}  
+While SmartThings Energy focuses primarily on energy efficiency and power consumption management, our service integrates data related to appliances, health, emotions, and lifestyle habits to provide a comprehensive AI-generated family lifestyle report. In other words, it goes beyond a single-domain approach (energy management) to evolve into a holistic AI platform that offers family-oriented lifestyle improvement and emotional feedback, establishing a clear point of differentiation.  
+
+\end{enumerate}
+
+% ---------- (b) ----------
+\item {Strive (Group Fitness Challenge App) [2]}
+
+\begin{enumerate}[label=\arabic*) , leftmargin=2.2em, itemsep=0.7em]
+
+\item {Function:}  
+Strive is a social fitness challenge application that allows users to set exercise goals and participate in team-based competitions or collaborations with family members or friends. Users can set objectives such as step counts or workout durations and monitor their progress through a real-time leaderboard. Upon completing missions, users earn badges and titles, and family members can encourage one another through motivational notifications. Additionally, the app enables continuous performance evaluation by comparing individual results with team averages.  
+
+\item {Similarity with Our Service:}  
+Like the Family Challenge System in our service, Strive adopts a team-based goal structure and promotes participation through both competitive and cooperative mechanics. Both platforms use behavioral data to generate visual feedback and employ gamification strategies that enhance engagement and motivation.  
+
+\item {Difference from Our Service:}  
+Strive is limited to fitness-related data derived from wearable devices, whereas our service expands the scope by combining appliance, health, and lifestyle data to support challenges across various daily activities such as cleaning and energy saving. Thus, instead of functioning merely as a fitness-oriented competition platform, our system aims to build an intelligent challenge ecosystem that integrates family communication and overall lifestyle improvement within the household context.  
+
+\end{enumerate}
+
+% ---------- (c) ----------
+\item {FamilyAlbum (by Mixi, Japan) [3]}
+
+\begin{enumerate}[label=\arabic*) , leftmargin=2.2em, itemsep=0.7em]
+
+\item {Function:}  
+FamilyAlbum is a private family-oriented social networking platform that allows members to share photos and videos and interact through comments and emojis. The AI system automatically categorizes uploaded content by date and generates features such as “1-second highlight videos” or “On this day last year,” helping families relive shared memories. Furthermore, its feed-based interface facilitates easy intergenerational communication and emotional connection.  
+
+\item {Similarity with Our Service:}  
+Our service also employs a family-centered feed structure and AI-based summarization functions to promote communication and emotional interaction among members. Like FamilyAlbum, it visualizes daily records in an easily accessible and aesthetically organized format, offering a similar user experience focused on familial engagement.  
+
+\item {Difference from Our Service:}  
+While FamilyAlbum primarily emphasizes emotional sharing through photo and video records, our service goes a step further by transforming AI-collected lifestyle data into narrative-driven visual stories within the family feed. This distinction positions our service not merely as a record-oriented platform but as an AI-driven family relationship enhancement system, combining emotional exchange with data insights to create a new form of intelligent family communication platform.  
+
+\end{enumerate}
+
+% ---------- (d) ----------
+\item {Reinforcement Learning [4]}
+
+\begin{enumerate}[label=\arabic*) , leftmargin=2.2em, itemsep=0.7em]
+
+\item {Function:}  
+Reinforcement Learning (RL) is a machine learning paradigm in which an agent learns to make optimal decisions through continuous interaction with its environment. By receiving rewards or penalties in response to its actions, the agent gradually develops a policy that maximizes cumulative long-term rewards.
+Through repeated trial-and-error processes, the system is able to discover effective strategies even without prior knowledge of the environment’s structure.
+
+\item {Application to our Service:}  
+In the proposed family challenge service, RL can be applied to the challenge recommendation and difficulty adjustment algorithm. The system observes user engagement metrics—such as completion rates, satisfaction feedback, and participation frequency—and interprets them as reward signals. A successfully completed and positively rated challenge yields a high reward, whereas prematurely abandoned or negatively rated challenges result in low rewards. Based on these reward patterns, the RL agent updates its policy to recommend future challenges that are more likely to match the family’s interests and ability levels.
+
+Furthermore, RL enables dynamic difficulty adjustment, where overly easy or overly difficult challenges are penalized, while moderately challenging and successfully completed ones are rewarded. This allows the system to automatically tailor the level of difficulty to each family’s performance patterns.
+
+\item {Expected Outcomes:}
+By integrating reinforcement learning, the service can
+(1) continuously personalize challenges to fit each family’s behavioral tendencies,
+(2) increase long-term engagement and motivation, and
+(3) evolve into a self-adaptive recommendation system that improves its performance as more interaction data is accumulated.
+
+\end{enumerate}
+\end{enumerate}
+
+\section{Requirements}
+
+\subsection{User Authentication}
+
+\begin{enumerate}[label=\textbf{\alph*)}, itemsep=1.2em, leftmargin=1.8em]
+
+\item {Initial Screen:}  
+Upon startup, the application initializes with the login screen as the default interface. This screen enables returning users to access their accounts and provides options for new user registration or credential recovery. The interface includes input fields for user ID and password, with the password field masked to ensure privacy. Prior to server transmission, client-side validation checks are applied, including ID format verification and minimum password requirements. All login data are transmitted securely, and based on the server response, users are either redirected to the main dashboard or presented with a corresponding error message.  
+
+
+\item {User Input:}  
+After the login screen is displayed, the user must provide their account credentials. The ID field requires a unique identifier, often in the form of an email address, while the password field accepts a private passphrase that remains hidden as it is typed. Before the credentials are submitted, the system performs simple checks such as verifying email structure or confirming that the password meets minimum length and complexity rules.  
+
+
+\item {Validation and Authentication:}  
+Once the credentials are entered, the system validates them against stored records. The password is first converted into a secure hash so that the original value is never transmitted or stored. If the account ID exists and the hash matches the one saved in the database, the login is successful and access to the main interface is granted. If the password does not match, the user is notified and prompted to try again, while a non-existent ID results in a clear message indicating that the account cannot be found.  
+
+\end{enumerate}
+
+\subsection{Data Collection from Devices}
+
+The system integrates and manages data collected from various IoT appliances and wearable devices. Each dataset serves as the foundation for analyzing user lifestyle patterns and generating behavioral indicators at the family level.
+\begin{enumerate}[label={(\alph*)}, itemsep=1.2em, leftmargin=1.8em]
+
+% ---------------- (a) ----------------
+\item {Household Tasks Data Collection}
+
+The system automatically collects household activity data from multiple LG ThinQ appliances. All task-related events—such as washing, drying, dishwashing, and cleaning—are automatically logged, transmitted to the backend, normalized, and stored.
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item {Washing Machine:} Each completed washing cycle is recorded as a single household task event. Cycle start and end times are captured to track overall laundry frequency.
+    \item {Dryer:} Every completed drying cycle is logged in the same manner, allowing monitoring of laundry-related activity frequency.
+    \item {Dishwasher:} Each dishwashing operation is registered as a completed task. These records are used to measure participation and contribution in kitchen-related chores.
+    \item {Robot Vacuum:} Both the number of cleaning sessions and the total cleaned area are recorded. These metrics reflect not only frequency of use but also contribution to household cleanliness.
+\end{itemize}
+
+If data from any device are missing or incomplete, the system flags the inconsistency and notifies the user to ensure accuracy and transparency of the calculated indicators.
+
+
+% ---------------- (b) ----------------
+\item {Energy Consumption Data}
+
+The system periodically collects and stores power consumption data from LG ThinQ appliances. This information is used to analyze energy-saving performance relative to a baseline or user-defined family goal.
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item {Refrigerator:} Continuous power usage is tracked to monitor efficiency and detect unnecessary consumption.
+    \item {Air Conditioner:} Operating modes, usage duration, and hourly power draw are collected to evaluate peak-time usage and the effectiveness of energy-saving modes.
+    \item {Washing Machine:} Energy consumption per washing cycle is measured in kilowatt-hours (kWh), allowing comparison between normal and eco modes.
+    \item {TV:} Power consumption is logged during both active and standby states to identify idle usage patterns such as nightly standby power.
+\end{itemize}
+
+If any energy data are delayed or unavailable, the system identifies the gap and computes savings indicators only from verified data sources.
+\\
+% ---------------- (c) ----------------
+\item {Exercise and Wellness Data}
+
+The system gathers health and activity information from wearable devices such as LG Health or compatible smartwatches. Collected data are synchronized daily or weekly to generate wellness indicators.
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item {Step Count:} The total number of steps taken per day is recorded as the baseline metric for physical-activity tracking.
+    \item {Heart Rate:} Continuous or periodic heart-rate measurements are logged to monitor exercise intensity and overall wellness, while abnormal spikes or missing data are filtered out to maintain accuracy.
+    \item {Active Minutes:} The duration of light, moderate, and vigorous activity is aggregated to represent both the quality and sustainability of physical exercise.
+\end{itemize}
+
+In cases of synchronization failure or incomplete records, the system highlights the issue and alerts the user, ensuring transparency and reliability of wellness indicators.
+
+\end{enumerate}
+
+\subsection{Family Challenge System}
+
+\begin{enumerate}[label={(\alph*)}, itemsep=1.2em]
+
+% ---------- (1) ----------
+\item {Challenge Creation and Recommendation}
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item The system provides {action-based goal templates} that allow users to select intuitive, behavior-oriented goals without entering numerical values.
+    \item Each goal can be adjusted in intensity using a single slider control.
+    \item The system supports three types of challenges:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item {Household Tasks (Weekly):} Encourages family members to establish shared home-care routines.
+        \item {Energy Saving (Weekly):} Reinforces sustainable lifestyle habits.
+        \item {Exercise \& Wellness (Daily):} Helps individuals maintain a balanced daily health rhythm.
+    \end{itemize}
+    \item To generate relevant goals, the system analyzes user or family data from the previous two to four weeks to identify areas of low activity.
+    \item Based on this analysis, it automatically recommends appropriate challenges together with the following information: the goal intensity level (Easy / Normal / Boost), an estimated success rate, and the intended duration period.
+\end{itemize}
+
+% ---------- (2) ----------
+\item {Challenge Types \& Engagement Mechanics}
+
+The challenge system is designed to promote repeated engagement by introducing short, rewarding, and interactive missions. Each challenge type motivates users through different mechanisms such as routine formation, family collaboration, surprise bonuses, and friendly competition.
+
+\begin{enumerate}[label={\arabic*)}, leftmargin=2em, itemsep=0.8em]
+
+    \item {Daily Challenge} \\
+    Daily Challenges convert everyday habits into simple, time-bound missions that can be completed within a single day.
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Grants +4 points upon successful completion
+        \item Automatically refreshed each morning based on the user’s routine
+        \item Encourages habit formation with instant feedback
+        \item Upon completion, the user receives a point notification and visual confirmation (e.g., ``+4 points'')
+    \end{itemize}
+
+    \item {Family Relay Challenge} \\
+    A cooperative mission where each family member must complete their assigned portion in sequence. If any member fails, the entire challenge is not completed.
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Mission is passed sequentially (e.g., Parent → Sibling → Child)
+        \item Successful completion rewards +6 points to each participating member
+        \item Failure results in a shared notification, encouraging retry and family communication
+    \end{itemize}
+
+    \item {Double Reward Day} \\
+    Introduces an unexpected incentive by randomly selecting a challenge that awards twice the normal points.
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Designated challenge rewards 2× standard points
+        \item Displayed with a highlighted label such as ``2X Today''
+        \item Encourages immediate participation and daily app access
+    \end{itemize}
+
+    \item {Speed Challenge} \\
+    When multiple family members undertake the same mission, only the first person to complete it receives a special bonus.
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Base reward plus a bonus for the first finisher
+        \item Recognition is displayed on the family board (e.g., ``First to Complete: Walking Challenge'')
+        \item Promotes light competition and individual initiative
+    \end{itemize}
+
+\end{enumerate}
+
+
+% ---------- (3) ----------
+\item {Challenge Execution and Evaluation}
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item Users can access the “Today’s Recommended Challenges” section on the home screen, select one of three suggested cards, and start a challenge immediately by tapping the [Start Challenge] button.
+    \item The system automatically evaluates challenge results at both the individual and family levels. Evaluation occurs on a daily or weekly basis depending on the challenge type.
+    \item For family-level challenges, all members share a common goal, and each participant’s contribution is aggregated to calculate total achievement.
+\item Two calculation models are supported:
+
+
+ \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item{Aggregate Type:} Individual completion counts from all members are summed to determine overall family progress.
+        \item {Average Type:} The average achievement rate of all members is used to evaluate family performance.
+    \end{itemize}
+    \end{itemize}
+\end{enumerate}
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item Each member’s data are weighted equally. If a member’s data are missing, the system substitutes the family’s average value and flags the record as \textit{“Incomplete.”}
+    \item A challenge is considered successful when the final achievement rate meets or exceeds a predefined threshold (e.g., $\geq$ N times or $\geq$ 90\%).
+\end{itemize}
+
+\subsection{Tap1. Home Map \& Character Space}
+
+\begin{enumerate}[label={(\alph*)}, itemsep=1.2em]
+
+% ---------- (a) ----------
+\item {Home Appliance Map Interface}
+
+ When the user opens the app, a home-shaped appliance map appears. The map is divided into living spaces such as the living room, kitchen, bedroom, and bathroom. Each space contains the relevant home appliances and the challenges linked to that area. For example:
+
+\begin{itemize}[leftmargin=2em, itemsep=0.4em]
+    \item Living Room -- Tidiness Challenge
+    \item Kitchen -- Energy-Saving Cooking Challenge
+    \item Bathroom -- Water-Saving Challenge
+\end{itemize}
+
+ Users can freely explore the map by zooming in or navigating through it. Each area displays real-time icons such as ``refrigerator in use'' or ``laundry completed.'' When tapped, a pop-up window shows the current challenge progress and related activity details.
+
+ UX Perspective: The map is designed so that family members can intuitively recognize their own actions within the familiar context of a home environment, helping them participate naturally and feel more engaged.
+
+% ---------- (b) ----------
+\item {Individual Character Setup}
+
+ ach family member creates and customizes their own character. Basic avatars can be personalized with simple options such as clothing and hairstyle. The character represents each individual on the family board, and their actions and points are visually reflected in real time. For instance, completing an exercise challenge makes the character perform a running motion, while completing an energy-saving challenge brightens the character’s surroundings. During character creation, users enter their name, family role, favorite color, and main challenge. All settings are synchronized across devices so that every family member sees the same screen.
+
+% ---------- (c) ----------
+\item {Real-Time Character Status}
+
+ When a user taps on a character, they can instantly view that member’s current challenge progress in real time. The following information is displayed:
+
+\begin{itemize}[leftmargin=2em, itemsep=0.4em]
+    \item {Current Points} -- today’s earned points, total accumulated points, and the contribution ratio within the family
+    \item {Earned Badges} -- e.g., ``Runner of the Week (2nd Week of October)'', ``Walking King''
+    \item {Ongoing Challenge Progress} -- e.g., ``Family Running Challenge (3.8km / 5km completed)''
+\end{itemize}
+
+ When a challenge is completed, the user’s points increase immediately, and a ``+4p'' floating balloon appears above the character’s head for one second. The family progress gauge rises simultaneously, showing an animated fill effect to represent the team’s growth. Even when the app is closed, if another family member completes a challenge, a small glowing light appears near the user’s character with a notification such as ``Mom finished the dishwashing challenge! +4pt'' Upon successful completion of a challenge, the character’s badge chest opens with a short popup message: ``'Walking King' badge earned!'' Tapping the badge chest reveals detailed information on when and through which challenge each badge was obtained. All of this data is synchronized in real time (within 1 second) via a WebSocket event stream, ensuring that every family member’s screen reflects the same status simultaneously.
+
+% ---------- (d) ----------
+\item {IoT Integration for Challenge Updates}
+
+ Each challenge automatically updates based on real data from connected IoT devices or sensors. For example, when the washing machine finishes an energy-saving cycle, points for the Energy-Saving Laundry Challenge are instantly reflected. Examples of connectable devices include:
+
+\begin{itemize}[leftmargin=2em, itemsep=0.4em]
+    \item Washing machine -- Energy-Saving Laundry Challenge
+    \item Water purifier -- Proper Hydration Challenge
+    \item Air conditioner -- Optimal Temperature Challenge
+    \item Smartwatch -- Daily Step Challenge
+\end{itemize}
+
+ Delays in data synchronization should be minimized. If data cannot be retrieved, the last known status is temporarily displayed. Users can manually choose which devices are connected and configure them through the {Device Connection Management} menu.
+
+% ---------- (e) ----------
+% ---------- (e) ----------
+\item {Character Animation and Progress Visualization}
+
+Each character’s state changes in real time according to the challenge completion rate. The progress from 0\% to 100\% is represented in three stages.
+
+\begin{minipage}{\linewidth}
+\centering
+\label{tab:progress-states-home}
+\begin{tabular}{l l l}
+\hline
+{Progress} & {State} & {Example Motion} \\
+\hline
+0--30\%   & Idle      & Sitting, yawning \\
+31--70\%  & Active    & Walking, tidying motion \\
+71--100\% & Complete  & Jumping, clapping \\
+\hline
+\end{tabular}
+\end{minipage}
+
+When a challenge is completed, celebratory fireworks and short sound effects play, and a speech bubble appears above the character indicating completion. If there is no progress for a certain period of time, the character shows boredom through gestures such as yawning or slouching. Characters interact with one another -- performing gestures such as high-fives or cheering motions -- to express family unity and enhance the sense of shared achievement.
+
+\end{enumerate}
+
+
+\subsection{Tap2. Collecting point \& Reward Market}
+
+\begin{enumerate}[label={(\alph*)}, itemsep=1.2em]
+
+% ---------- (a) ----------
+\item {Personal Point Display (Top-Right Indicator)}
+
+Each individual’s personal point balance is displayed at the top-right corner of the screen, next to their profile icon. This serves as a quick visual reference for personal progress, separate from the shared family pool.
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item When a user completes a challenge, their personal points increase instantly, appearing with a floating “+X” animation above the top bar.
+    \item For example, if a user earns 4 points from a dishwashing challenge, the indicator momentarily displays “+4p” before updating the total.
+\end{itemize}
+
+Even without opening any menu, users can always see how many points they personally contributed today.
+
+% ---------- (b) ----------
+\item {View Total Family Points}
+
+Upon accessing the Point Collecting tab, users can view the current total family points at the top of the screen, displayed within a circular gauge or progress bar. Each member’s contribution is represented through subtle markers or initials inside the bar, reinforcing a sense of shared effort rather than isolated progress.
+
+% ---------- (c) ----------
+\item {Reward Catalog}
+
+Scrolling further reveals the Reward Catalog, containing LG product discount coupons, gift vouchers, and seasonal offers. Each reward is displayed as an interactive reward card, including:
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item Reward Image or Icon
+    \item Required Points (e.g., 4,000P)
+    \item Short Benefit Description – e.g., “₩30,000 Coupon – LG Puricare”
+    \item Redeem Button – active only when sufficient points are available
+\end{itemize}
+
+Tapping on a reward card opens a detailed popup with terms, expiration date, and a confirmation button (“Redeem Now”).
+
+% ---------- (d) ----------
+\item {Real-Time Point Updates}
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item When a user redeems a reward, the family’s total point gauge instantly decreases, accompanied by a soft deduction animation (e.g., coins dispersing).
+    \item A confirmation message appears: “LG Coupon Redeemed! Check ‘My Coupons’ to use it anytime.”
+    \item If the user lacks enough points, the Redeem button is replaced with a subtle message: “Not enough points – keep collecting!”
+\end{itemize}
+
+\end{enumerate}
+
+
+\subsection{Tap3. Family Ranking}
+
+\begin{enumerate}[label={(\alph*)}, itemsep=1.2em]
+
+\item {Real-Time Family Ranking}
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item Families are ranked in real time based on their total accumulated points.
+    \item Within the LG ThinQ app, users can view their family’s current rank, total score, and any benefits unlocked through point-based rewards.
+    \item By checking their real-time rank, users can feel a sense of friendly competition and shared motivation with other families.
+\end{itemize}
+
+\end{enumerate}
+
+
+\subsection{Notification \& Communication Layer}
+
+\begin{enumerate}[label={\alph*.}, itemsep=1.4em, leftmargin=1.6em]
+
+% ---------- (1) ----------
+\item {Mobile Push Notifications}
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item The system must provide {mobile push notification} functionality to continuously maintain user engagement and awareness.
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item {Notifications must include challenge reminders, progress summaries, and system status alerts.}
+        \item {Notifications must be concise and non-intrusive, designed so that users can check information without feeling burdened.}
+    \end{itemize}
+\end{itemize}
+
+
+% ---------- (2) ----------
+\item {Smart Speaker Announcements}
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item The system must provide voice notification functionality through smart speakers.
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item {Users must be able to listen to family-level activity summaries without any manual operation.}
+        \item {Voice briefings must be provided on a daily and weekly basis.}
+    \end{itemize}
+    \item In homes connected with smart speakers, the system must deliver information through the following functions:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item {(a) Daily Briefing:} Provides a voice summary of the previous day’s main achievements and today’s recommended challenges.
+        \item {(b) Achievement Announcement:} Broadcasts a voice message that the whole family can hear when a challenge is successfully completed.
+    \end{itemize}
+    \item The notification system must extend the visually centered app experience into an auditory communication channel, allowing users to receive information hands-free while cooking, cleaning, or exercising.
+    \item All notification channels must be designed to maintain the flow of challenge participation without requiring continuous user attention.
+\end{itemize}
+
+\end{enumerate}
+
+\subsection{System Architecture \& Data Flow}
+
+\begin{enumerate}[label={\alph*.}, itemsep=1.4em, leftmargin=1.6em]
+
+% ---------- (1) ----------
+\item {IoT and Wearable Device Integration}
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item The system must be integrated in real time with IoT and wearable devices, automatically collecting data on household activities, energy consumption, and wellness.
+    \item All collected data must be automatically transmitted to the backend system through the cloud API without user intervention.
+    \item The following devices and data categories are included:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item {LG ThinQ Appliances:} Includes washing, drying, dishwashing, refrigerator energy usage, air conditioner operating modes, TV on/standby states, and robot vacuum cleaning sessions and area coverage data.
+        \item {Wearable Devices (e.g., LG Health, Smartwatches):} Continuously provide health and activity data streams including step count, heart rate, and activity time by intensity. Each device must periodically or on-demand transmit activity logs, energy usage, cleaning sessions, step count, heart rate, and activity intensity data.
+    \end{itemize}
+    \item All device and application events must be transmitted securely in real time. Timestamp assignment and queuing are performed in the backend system before data normalization and aggregation processing.
+\end{itemize}
+
+
+% ---------- (2) ----------
+\item {Data Processing Structure}
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item To efficiently process data from various sources, the system must adopt a hybrid structure combining event streaming and batch processing.
+    \item The data collection and processing stages are as follows:
+    \begin{itemize}[leftmargin=2.5em, itemsep=0.4em]
+        \item {(1) Event Capture:} Continuously collect raw data from IoT and wearable devices.
+        \item {(2) Queue Management:} Temporarily store incoming data in a scalable message queue to handle spikes in device traffic.
+        \item {(3) Batch Reconciliation:} Periodically verify and normalize accumulated events.
+        \item {(4) Data Delivery:} Deliver refined and structured data to the AI analytics pipeline, where it is aggregated and stored in the database for visualization.
+    \end{itemize}
+    \item The data processing workflow must ensure scalability, persistence, and fault tolerance throughout all operations.
+\end{itemize}
+
+
+% ---------- (3) ----------
+\item {Privacy and Security Controls}
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item {Data Encryption and Transmission Security:}  
+    All communications between IoT devices, wearable sensors, and backend servers must be encrypted using the HTTPS/TLS protocol to prevent eavesdropping or tampering during transmission.
+    
+    \item {Secure Storage and Access Control:}  
+    When stored on the server, data must be protected using AES-256 encryption. Access privileges must be clearly separated through Role-Based Access Control (RBAC) among users, administrators, and service modules.
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item {User Level:} Users can access only their own family data through authenticated sessions.
+        \item {(b) Administrator Level:} Administrators can access only anonymized aggregated data, which is limited to system maintenance and AI model improvement purposes.
+        \item {(c) Service Module Level:} Each application module can access only the necessary data subset, controlled by scoped API keys and signed tokens.
+    \end{itemize}
+    \item Through this structure, the system ensures data privacy, access control, encrypted storage, and secure transmission paths, maintaining a highly reliable security layer even within a real-time IoT and AI-integrated environment.
+\end{itemize}
+
+\end{enumerate}
+
+\section{DEVELOPMENT ENVIRONMENT}
+\subsection{Platform Configuration and Selection Rationale}
+
+HomeQuest is designed as a web application based on Firebase Hosting, utilizing key services of Google Firebase such as Authentication, Cloud Firestore, Hosting, and Cloud Functions. Through this integrated architecture, user authentication, data management, server execution, and deployment are all handled within a single platform. Firebase fully supports HomeQuest’s real-time data synchronization and family feedback structure, enabling rapid prototyping and significantly reducing the overall development cycle.
+
+\begin{itemize}
+    \item \textit{Integrated Backend Environment:}  
+    Firebase allows user authentication, data management, and deployment to be handled in a single unified environment, eliminating the need for separate server infrastructure.
+    
+    \item \textit{Real-Time Data Synchronization:}  
+    By leveraging Firestore’s real-time listener feature, challenge progress, point updates, and reward exchanges among family members are synchronized across all devices within one second.
+    
+    \item \textit{Cloud-Based Stability and Scalability:}  
+    Built upon Google Cloud infrastructure, Firebase ensures stable data processing and transmission even as the number of IoT and wearable devices increases, without performance degradation.
+\end{itemize}
+
+Overall, Firebase was selected as the optimal platform to achieve HomeQuest’s goals of real-time collaboration and consistent family-level data management.
+
+\subsection{Programming Languages and Frameworks}
+
+\begin{itemize}
+    \item \textit{Frontend:} JavaScript / React.js  
+    Offers high compatibility with the Firebase SDK and provides efficient state management for real-time data reflection.
+    
+    \item \textit{Backend:} Node.js (Firebase Cloud Functions)  
+    Enables serverless function-level execution without the need for traditional server management.
+    
+    \item \textit{AI Module:} Python  
+     Used to develop recommendation models and behavior pattern analysis based on family activity data.
+\end{itemize}
+
+\subsection{Database Structure Selection (NoSQL / Firestore)}
+
+HomeQuest is a smart home platform centered on real-time data sharing and challenge-based family interaction. To realize this concept, Google Firebase’s Cloud Firestore was selected as the main database. Firestore, built on a NoSQL structure, provides flexibility in data modeling and high-speed synchronization capabilities.
+
+\begin{itemize}
+    \item \textit{Flexible Data Structure:}  
+    Data entities such as families, members, and challenges are subject to frequent modification. Firestore’s schema-free structure allows flexible and scalable data modeling to accommodate these changes efficiently.
+    
+    \item \textit{Event-Oriented Architecture:}  
+    HomeQuest handles event-based data such as “family progress status” and “individual completion logs.” Storing data in document-oriented structures rather than relational tables enables faster and more efficient query performance.
+    
+    \item \textit{Real-Time Synchronization:}  
+    Firestore’s real-time listener feature automatically updates all client interfaces when data changes occur. For example, when a family member completes a challenge, the global family leaderboard and character points are immediately updated across all devices.
+    
+    \item \textit{Security Rule-Based Access Control:}  
+    Firestore employs rule-based access control, allowing user- and family-level permission management. By utilizing Firebase Security Rules, family data is securely isolated to prevent unauthorized access.
+\end{itemize}
+\subsection{Cost Estimation}
+
+\begin{itemize}
+    \item Firebase (Spark Plan): Authentication, Firestore, and Hosting services – Free for small-scale usage.
+    \item Development Tools: Visual Studio Code, GitHub, Node.js – Free and open source.
+    \item Domain (Optional): homequest.dev – Approximately ₩10,000–₩15,000 per year.
+\end{itemize}
+
+Firebase’s free Spark Plan provides authentication, database, and hosting services at no cost during the development and testing stages.
+
+In the production stage, a **pay-as-you-go** billing system applies depending on usage volume (database reads/writes, storage, and traffic).
+
+
+\subsection{Development Environment}
+
+\begin{itemize}
+    \item Operating System: Windows 11 / macOS Sonoma
+    \item Node.js: v20.x
+    \item npm: v10.x
+    \item Firebase CLI: v13.x
+    \item Integrated Development Environment (IDE): Visual Studio Code
+    \item Browser: Latest version of Google Chrome
+    \item Version Control: Git + GitHub
+    \item Deployment Environment: Firebase Hosting (Google Cloud Infrastructure)
+\end{itemize}
+
+\subsection{Use of Commercial Cloud Platform}
+
+HomeQuest utilizes Google Cloud–based Firebase to manage the server, database, authentication, and hosting within a single cloud ecosystem. 
+
+Firebase’s serverless architecture and auto-scaling capability ensure stable performance even under heavy load or increased IoT device connections.
+
+Moreover, Firebase inherits Google Cloud’s TLS encryption and security infrastructure, ensuring that IoT and wearable data are transmitted and stored securely.
+
+This cloud-based structure technically supports HomeQuest’s philosophy of real-time data sharing and emotional connection among family members, while maintaining high standards of system reliability, scalability, and data security.
+
+
+
+
+
+\section{SPECIFICATION}
+\subsection{Initial Screen}
+
+\FloatBarrier
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{수정)로고.png}
+    \caption{Initial Screen}
+    \label{fig:initial}
+\end{figure}
+
+\begin{enumerate}[label={}, leftmargin=0pt, itemsep=0em]
+     \item When the app is launched, the service logo “HomeQuest” is displayed at the center of the screen. This serves as a welcome and identity screen, allowing users to recognize the brand before entering the main interface.
+\end{enumerate}
+
+\subsection{Log In}
+
+\FloatBarrier
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{수정)로그인.png}
+    \caption{Log In}
+    \label{fig:initial}
+\end{figure}
+
+\begin{enumerate}[label={\arabic*)}, itemsep=1.4em, leftmargin=1.6em]
+    \item {ID Input}
+    \begin{itemize}[leftmargin=2em]
+        \item {Description:} Guides users to enter their login ID, either as an email address or phone number.
+        \item {Input Format:} Accepts formats like user@example.com or 01012345678.
+        \item {Validation:} Verifies whether the input follows a valid email or phone number format.
+    \end{itemize}
+
+    \item {Password Input}
+    \begin{itemize}[leftmargin=2.5em]
+        \item {Description:} Prompts users to enter their password.
+        \item {Input Format:} Accepts text input, displayed as “•” symbols for privacy.
+        \item {Validation:} Checks for minimum length and required character combinations.
+    \end{itemize}
+
+    \item {Log In Button}
+    \begin{itemize}[leftmargin=2.5em]
+        \item {Action:} Attempts to log in with the provided credentials.
+        \item {On Success:} Redirects to the main Home screen.
+        \item {On Failure:} Displays an error message (“Invalid ID or password”).
+    \end{itemize}
+
+    \item {Additional Options}
+    \begin{itemize}[leftmargin=2.5em]
+        \item {Menu:} Find ID / Find Password / Sign Up.
+        \item {SNS Login:} Supports quick login via Kakao, Naver, Facebook, Google, and Apple accounts.
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Sign-Up}
+
+\FloatBarrier
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{수정)회원가입.png}
+    \caption{Sign-Up}
+    \label{fig:initial}
+\end{figure}
+
+\begin{enumerate}[label={\arabic*)}, itemsep=1.4em, leftmargin=1.6em]
+    \item {ID Input}
+    \begin{itemize}[leftmargin=2.5em]
+        \item {Description:} Allows users to create a new ID for login.
+        \item {Input Format:} Alphanumeric string (e.g., homequest01).
+        \item {Validation:} Checks duplication through a “Check Availability” button.
+    \end{itemize}
+
+    \item {Password Input}
+    \begin{itemize}[leftmargin=2em]
+        \item {Description:} Users set a secure password for their account.
+        \item {Input Format:} Combination of letters, numbers, and special characters (minimum 8 characters).
+        \item {Validation:} Confirms whether the password matches the re-entered confirmation field.
+    \end{itemize}
+
+    \item {Email Input}
+    \begin{itemize}[leftmargin=2em]
+        \item {Description:} Collects email address for verification and account recovery.
+        \item {Input Format:} Follows the format user@example.com.
+        \item {Validation:} Checks email structure and allows domain selection.
+    \end{itemize}
+
+    \item {Phone Number Input}
+    \begin{itemize}[leftmargin=2em]
+        \item {Description:} Used for identity verification and notification purposes.
+        \item {Input Format:} Numeric format such as 01012345678.
+        \item {Validation:} Performs text message verification through “Send Code.”
+    \end{itemize}
+    
+    \item {Sign-Up Button}
+    \begin{itemize}[leftmargin=2em]
+        \item {Action:} Activates only when all fields are valid.
+        \item {On Success:} Completes registration and redirects to the login screen.
+        \item {On Failure:} Displays an error message for invalid or missing information.
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Initial Setup}
+
+\FloatBarrier
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{수정)닉네임&역할 설정.png}
+    \caption{Profile Setup}
+    \label{fig:placeholder}
+\end{figure}
+
+\begin{enumerate}[label={\arabic*)}, itemsep=1.4em, leftmargin=1.6em]
+
+% ---------- (1) ----------
+
+\item {Profile Setup}
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item {Description:} This step allows users who have completed sign-up to enter their basic information.
+    \item {Input Fields:} Nickname, Family Role
+    \item {Input Format:}
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item {Nickname:} A string of 2–10 characters, consisting of Korean, English letters, or numbers.
+        \item {Family Role:} Free text input (e.g., Dad, Mom, Son, etc.)
+    \end{itemize}
+    \item {Action:}
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item When the user clicks the “Next” button, the entered information is saved, and the user proceeds to the next step.
+    \end{itemize}
+    \item {Validation:}
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item After entering a nickname, users can click the “Check Duplication” button to verify if the nickname already exists.
+        \item If any input field is empty, the “Next” button is disabled.
+    \end{itemize}
+\end{itemize}
+
+
+% ---------- (2) ----------
+\item {Avatar Creation}
+
+\FloatBarrier
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{수정)아바타생성.png}
+    \caption{Avatar Creation}
+    \label{fig:placeholder}
+\end{figure}
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item {Description:} This step allows users to create a 3D avatar that represents themselves.
+    \item {Feature:} Users can swipe left or right to preview various avatar styles.
+    \item {Action:} After selecting an avatar, the user clicks the “Next” button to save the selected avatar information and proceed to the next step.
+\end{itemize}
+
+
+% ---------- (3) ----------
+\item {Family Connection}
+
+\FloatBarrier
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[b]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{수정)가족코드입력.png}
+        \caption{Family Connection}
+        \label{fig:family_connection}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{수정)새가족만들기.png}
+        \caption{New Family Creation}
+        \label{fig:newmake}
+    \end{minipage}
+\end{figure}
+
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item {Description:} This step allows users to either join an existing family group or create a new one.
+    \item {Feature Options:}
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item {Enter Family Code:} Connect by entering the code provided by an existing family member.
+        \item {Create New Family:}
+        \begin{itemize}[leftmargin=2em, itemsep=0.3em]
+            \item Create a new family group and automatically receive a unique family code.
+            \item The generated family code is displayed on the screen and can be shared using the {Copy} button or the {Invite via KakaoTalk} option.
+        \end{itemize}
+    \end{itemize}
+    \item {Action:}
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item When “Enter Family Code” is selected, the code input field becomes active.
+        \item When “Create New Family” is selected, a code is automatically generated and displayed on the screen.
+        \item Once all selections are complete, the user clicks the “Start” button to proceed to the Home screen.
+    \end{itemize}
+    \item{Validation:}
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item The family code must be 6–8 characters long, containing letters and numbers.
+        \item If the format is incorrect or the input field is empty, the “Start” button is disabled.
+        \item If an invalid code is entered, an error message is displayed.
+        \item If the group exceeds the maximum of 5 members, an error message is displayed.
+    \end{itemize}
+\end{itemize}
+
+\end{enumerate}
+
+\subsection{Home Page}
+
+\FloatBarrier
+\begin{figure}[h]
+    \centering
+    \begin{minipage}[b]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{수정)탭1)홈.png}
+        \caption{Home Page}
+        \label{fig:home}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{수정)탭1)캐릭터상세.png}
+        \caption{Character Detail Page}
+        \label{fig:character_detail}
+    \end{minipage}
+\end{figure}
+
+
+\begin{enumerate}[label={\arabic*)}, itemsep=1.4em, leftmargin=1.6em]
+
+
+% ---------- (1) ----------
+\item {Room Navigation}
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item Description: The home screen is designed as an isometric map, where one character is placed in each room (e.g., living room, kitchen, laundry room, bedroom, etc.). Users can freely navigate the map using drag and pinch gestures to move, zoom in, or zoom out.
+    \item Components:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Isometric Map: Visually represents the overall house layout
+        \item Room icons
+        \item Appliance icons
+        \item Characters: avatars placed in each room
+    \end{itemize}
+    \item Actions:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Tapping a room opens its Room Detail screen.
+        \item Smooth zoom-in and zoom-out animations are applied when moving between rooms.
+        \item The last viewed room is saved locally so that the same position is restored upon re-entry.
+    \end{itemize}
+\end{itemize}
+
+
+% ---------- (2) ----------
+\item {Character and Gauge Bar}
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item Description: Each room on the home screen displays the user’s and family members’ characters, with a gauge bar above each character indicating the challenge progress. The gauge bar interacts with the character’s facial expressions or motions depending on the challenge status.
+    \item Components:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Character: Avatar representing the user (includes basic idle motions)
+        \item Gauge Bar: UI showing challenge progress
+        \item Character Detail Tab
+    \end{itemize}
+    \item Actions:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item As the challenge progresses, the gauge gradually fills; upon completion, it reaches full capacity and triggers a firework animation.
+        \item Tapping the gauge bar opens the Character Detail Window as a popup.
+        \item The character’s expressions and poses automatically change based on challenge progress.
+    \end{itemize}
+\end{itemize}
+
+
+% ---------- (3) ----------
+\item {Add Appliance Function}
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item Description: Users can add new LG appliances or replace existing devices in each room from the home screen. This function is linked to the user’s actual LG (ThinQ) account, allowing only authenticated devices to be added.
+    \item Components:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item “+” Button: Displayed at the bottom-left corner of the Home tab
+        \item Appliance List Popup: Shows a list of available LG devices (name, model, connection status)
+        \item Connection Confirmation Modal: Displays “Would you like to add this appliance?”
+    \end{itemize}
+    \item Actions:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Clicking the “+” button opens a popup showing the list of available devices from the LG account.
+        \item After selecting a device and clicking “Add”, the appliance icon appears in the corresponding room. Already-added devices are shown as disabled.
+        \item Added appliances are automatically linked to the challenge system and may display a Glow effect.
+        \item Appliance information is automatically saved both locally and on the server, ensuring persistence after re-entry.
+    \end{itemize}
+\end{itemize}
+
+
+% ---------- (4) ----------
+\item Appliance Glow Interaction
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item Description: LG appliances linked to active challenges are displayed with a soft glowing effect on the home screen. This allows users to easily recognize which appliances are currently associated with ongoing challenges.
+    \item Components:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Appliance Icon: Represents the connected LG device
+        \item Glow Layer: Animated border shimmer effect
+        \item State Transition Logic: Controls visual effects for active and completed states
+    \end{itemize}
+    \item Actions:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item When a challenge is active, a subtle blinking effect is applied to the appliance icon.
+        \item Upon completion, a short bright flash indicates success before returning to normal state.
+        \item Animations are automatically optimized and simplified to brightness transitions in low-power mode.
+    \end{itemize}
+\end{itemize}
+
+
+% ---------- (5) ----------
+\item Bottom Navigation Bar
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item Description: A fixed bottom navigation bar allows users to switch between major screens of the app. Tabs provide quick access to Home, Challenge, Reward, and Ranking pages.
+    \item Components:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Home: View the home screen and characters
+        \item Challenge: Access available challenge lists
+        \item Reward: Check points and reward history
+        \item Ranking: Compare user rankings
+    \end{itemize}
+    \item Actions:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Tapping a tab navigates to the corresponding page.
+        \item The selected tab is displayed with a filled icon and bold text.
+        \item Fade or slide animations are applied during transitions.
+    \end{itemize}
+\end{itemize}
+
+% ---------- (6) ----------
+\item Home Report Overview
+
+\FloatBarrier
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{수정)탭1)홈리포트.png}
+    \caption{Home Report}
+    \label{fig:placeholder}
+\end{figure}
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item Description: Displays the user’s daily and weekly challenge progress through an AI-generated report. The section provides personalized insights based on appliance usage patterns and challenge performance.
+    \item Components:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Report Card: Central container summarizing AI feedback and completed challenges
+        \item Challenge Log: Lists current and completed family and personal missions with corresponding points
+        \item Confirmation Button: Closes the report and returns to the main dashboard
+    \end{itemize}
+\end{itemize}
+
+% ---------- (7) ----------
+\item Settings Page
+
+\FloatBarrier
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{수정)설정.png}
+    \caption{Settings Page}
+    \label{fig:placeholder}
+\end{figure}
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item Description: Allows users to manage personal information, linked devices, notification preferences, and language settings in a unified interface.
+    \item Components:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Profile Header: Displays the user’s avatar, name, and email information
+        \item Settings List: Menu for device connection, family invitation, notifications, and language selection
+        \item Version and Policy Section: Shows current app version and privacy policy access
+        \item Logout Button: Provides account sign-out functionality
+    \end{itemize}
+\end{itemize}
+
+\end{enumerate}
+
+
+
+\subsection{Challenge Page}
+
+\FloatBarrier
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{수정)탭2)챌린지.png}
+    \caption{Challenge Page}
+    \label{fig:placeholder}
+\end{figure}
+
+\begin{enumerate}[label=\arabic*), itemsep=1.4em, leftmargin=1.6em]
+
+    \item Ongoing Challenges
+    \begin{itemize}[leftmargin=2em]
+        \item Description: Displays all currently active challenges in a card-based layout.
+        \item Components:
+        \begin{itemize}[leftmargin=2em]
+            \item Category tags (e.g., Health, Energy Saving, Household)
+            \item Challenge name (e.g., “Walk 10 Minutes,” “Laundry Relay Challenge”)
+            \item Progress bar (\%) showing completion rate
+        \end{itemize}
+        \item Action: Tapping a card opens the detailed challenge screen.
+    \end{itemize}
+
+    \item Challenge Detail
+
+\FloatBarrier
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{수정)탭3)챌린지상세.png}
+    \caption{Challenge Detail}
+    \label{fig:placeholder}
+\end{figure}
+
+    \begin{itemize}[leftmargin=2em]
+        \item Description: Shows detailed progress by participant and mission information.
+        \item Components:
+        \begin{itemize}[leftmargin=2em]
+            \item Progress timeline (e.g., “Mom completed on 10/1,” “Dad completed on 10/4”)
+            \item Duration, difficulty, and reward points
+            \item Comment section for family encouragement messages with “Like” feature
+        \end{itemize}
+        \item Action:
+        \begin{itemize}[leftmargin=2em]
+            \item Comments are added in real-time when the “Send” button is pressed.
+            \item Each comment includes username, date, and like count.
+        \end{itemize}
+    \end{itemize}
+
+    \item Recommended Challenges
+    \begin{itemize}[leftmargin=2em]
+        \item Description: Suggests new challenges based on user activity data.
+        \item Components:
+        \begin{itemize}[leftmargin=2em]
+            \item Challenge name, short description, reward points, and “Start” button
+            \item Example: “Reduce air conditioner use (+20p),” “Do stretching (+5p)”
+        \end{itemize}
+        \item Action: Pressing “Start” adds the challenge to the ongoing list.
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Reward Page}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{수정)탭3)리워드현황.png}
+    \caption{Reward Page}
+    \label{fig:placeholder}
+\end{figure}
+
+\begin{enumerate}[label={\arabic*)}, itemsep=1.4em, leftmargin=1.6em]
+
+% ---------- 1) ----------
+\item Reward Overview
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item Description: The Reward tab serves as the main screen where users can view their current points as well as the total accumulated family points. Users can switch between the “Reward” and “Market” tabs using the top tab buttons, with the Reward screen displayed by default.
+    \item Components:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Tab buttons: “Reward”, “Market”
+        \item Personal Reward Card
+        \item Family Reward Card
+    \end{itemize}
+    \item Actions:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Selecting the “Reward” tab keeps the current screen active.
+        \item Selecting the “Market” tab switches to the Market screen.
+        \item Clicking the “ > ” button on Personal Reward card opens the Timeline screen.
+    \end{itemize}
+\end{itemize}
+
+
+% ---------- 2) ----------
+\item My Reward
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item Description: Displays the user’s current point balance and the additional points that can be earned from ongoing challenges. Users can tap the “View Details (>)” button to check their detailed point history.
+    \item Components:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Current point balance (e.g., 13,780P)
+        \item Message indicating additional earnable points (e.g., “You can earn 1,300P more from ongoing challenges!”)
+        \item View Details button (>)
+    \end{itemize}
+    \item Actions:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item When “View Details” is clicked, the user is redirected to a timeline view showing point acquisition history, including challenge name, date, and earned points.
+    \end{itemize}
+\end{itemize}
+
+
+% ---------- 3) ----------
+\item Family Reward
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item Description: Displays the total accumulated family points by summing up all members’ contributions. A contribution bar visually represents each member’s input, and the weekly and monthly rankings show each member’s point growth over time.
+    \item Components:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Total family points (e.g., 130,000P)
+        \item Contribution bar
+        \item Ranking list showing member name, rank, and points earned
+        \begin{itemize}[leftmargin=2em, itemsep=0.3em]
+            \item Period filter tabs: “Weekly/Monthly”
+        \end{itemize}
+    \end{itemize}
+    \item Actions:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Switching between “Weekly / Monthly” changes the ranking view accordingly.
+        \item A point increase indicator (e.g., +1,000P) is shown beside each member’s name for the selected period.
+        \item Data automatically refreshes every Monday and on the 1st day of each month.
+    \end{itemize}
+\end{itemize}
+
+
+% ---------- 4) ----------
+\item Timeline
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{수정)탭3)타임라인.png}
+    \caption{Reward Timeline}
+    \label{fig:placeholder}
+\end{figure}
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item Description: The Timeline page displays the detailed history of all point activities in chronological order. Users can view their entire point flow including challenge participation, reward boxes, and market exchanges at a glance.
+    \item Components:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Point history list (Challenge name / Date / Point change)
+        \item Filter buttons: “All / Earned / Used”
+        \item Period selection dropdown (e.g., This Week / This Month / All)
+        \item Summary bar: Displays total points earned and used for the selected period
+    \end{itemize}
+    \item Actions:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item The list is sorted in descending order, showing the most recent records first.
+        \item Filters allow users to toggle between earned and used point views.
+        \item Selecting a specific period displays only data from that timeframe.
+        \item Infinite scrolling automatically loads previous records as the user scrolls.
+    \end{itemize}
+\end{itemize}
+
+
+% ---------- 5) ----------
+\item Reward Market
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{수정)탭3)마켓.png}
+    \caption{Reward Market}
+    \label{fig:placeholder}
+\end{figure}
+
+\begin{itemize}[leftmargin=2em, itemsep=0.6em]
+    \item Description: Accessible by tapping the “Market” button at the top of the Reward tab, this screen allows users to browse and redeem items or coupons using their accumulated points.
+    \item Components:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Point balance display
+        \item Product card list (Image, Name, Required Points, Exchange Button)
+        \item Category filter (e.g., Discount Coupons / Gift Icons, etc.)
+    \end{itemize}
+    \item Actions:
+    \begin{itemize}[leftmargin=2em, itemsep=0.4em]
+        \item Tapping the “Exchange” button opens a confirmation popup: “Would you like to redeem this item for 2,000P?”
+        \item Upon confirmation, the corresponding points are deducted, and a redemption success message appears.
+        \item All redemption records are automatically added to the user’s personal reward history in the My Reward Details section.
+    \end{itemize}
+\end{itemize}
+
+\end{enumerate}
+
+
+\subsection{Family Ranking Page}
+
+\FloatBarrier
+\begin{figure}[h]
+    \centering
+    \begin{minipage}[b]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{수정)탭4)가족랭킹.png}
+        \caption{Family Ranking Page}
+        \label{fig:family_ranking}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{수정)탭4)안내.png}
+        \caption{Ranking Info Page}
+        \label{fig:ranking_info}
+    \end{minipage}
+\end{figure}
+
+\begin{enumerate}[label=\arabic*), itemsep=1.4em, leftmargin=1.6em]
+
+    \item My Family Rank
+    \begin{itemize}[leftmargin=2em]
+        \item Description: Displays the family’s current ranking within their residential area.
+        \item Components:
+        \begin{itemize}[leftmargin=2em]
+            \item Shown as “Your family is ranked 36th.”
+            \item Ranking basis: families living in the same district (e.g., Seongdong-gu, Seoul).
+            \item Refresh cycle: Rankings reset monthly on the 1st day of each month (seasonal ranking system).
+        \end{itemize}
+    \end{itemize}
+
+    \item Regional Leaderboard
+    \begin{itemize}[leftmargin=2em]
+        \item Description: Visually displays the point rankings of families living in the same area.
+        \item Components:
+        \begin{itemize}[leftmargin=2em]
+            \item Top 3 families displayed with medal icons (Gold, Silver, Bronze).
+            \item Ranks 4–10 display rank number, family name, points, and up/down arrows.
+        \end{itemize}
+        \item Visual Effects:
+        \begin{itemize}[leftmargin=2em]
+            \item Rank changes are indicated with arrows (▲ for up, ▼ for down).
+            \item When rising: The row background flashes red for 2 seconds.
+            \item When falling: The row background flashes blue for 2 seconds.
+            \item This animation plays automatically during ranking updates, allowing users to perceive changes instantly.
+        \end{itemize}
+        \item Action:
+        \begin{itemize}[leftmargin=2em]
+            \item Pressing the “?” icon shows a popup explaining the ranking system.
+            \item Popup text: “Rankings reset on the 1st of every month. Families compete within the same area. Higher ranks increase reward box odds, which include coupons and bonus points.”
+        \end{itemize}
+    \end{itemize}
+
+    \item Reward Box
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\linewidth]{수정)탭4)상자깡.png}
+    \caption{Reward Box}
+    \label{fig:placeholder}
+\end{figure}
+    \begin{itemize}[leftmargin=2em]
+        \item Description: Provides visual feedback and rewards for seasonal achievements or ranking milestones.
+        \item Action:
+        \begin{itemize}[leftmargin=2em]
+            \item Displays an animated reward box with a message: “Congratulations! +100p.”
+            \item When the user presses “OK,” points are instantly added to their account.
+        \end{itemize}
+    \end{itemize}
+
+\end{enumerate}
+
+
+\subsection{Firestore Data Structure}
+
+\subsubsection*{0. Top-level Collections}
+\vspace{-0.5em}
+\includegraphics[width=\linewidth]{0.top.png}
+
+\subsubsection*{1. users}
+\vspace{-0.5em}
+\includegraphics[width=\linewidth]{1.users.png}
+
+\paragraph*{1-1. User challenge progress}
+\vspace{-0.5em}
+\includegraphics[width=\linewidth]{1-1.user challenge progress.png}
+
+\paragraph*{1-2. User challenge contributions}
+\vspace{-0.5em}
+\includegraphics[width=\linewidth]{1-2.user contributions.png}
+
+\paragraph*{1-3. User purchases}
+\vspace{-0.5em}
+\includegraphics[width=\linewidth]{1-3. user purchases.png}
+
+\subsubsection*{2. families}
+\vspace{-0.5em}
+\includegraphics[width=\linewidth]{2.families.png}
+
+\paragraph*{2-1. Family challenge progress}
+\vspace{-0.5em}
+\includegraphics[width=\linewidth]{2-1.family challenge progress.png}
+
+\paragraph*{2-2. Family challenge contributions}
+\vspace{-0.5em}
+\includegraphics[width=\linewidth]{2-2. family contributions.png}
+
+\paragraph*{2-3. Family purchases}
+\vspace{-0.5em}
+\includegraphics[width=\linewidth]{2-3. family purchases.png}
+
+\subsubsection*{3. challenges (Templates)}
+\vspace{-0.5em}
+\includegraphics[width=\linewidth]{3.challenges.png}
+
+\subsubsection*{4. randomBoxes}
+\paragraph*{4-1. Random boxes definition}
+\vspace{-0.5em}
+\includegraphics[width=\linewidth]{4-1.random boxes.png}
+
+\paragraph*{4-2. Random boxes history}
+\vspace{-0.5em}
+\includegraphics[width=\linewidth]{4-2.random box history.png}
+
+\subsubsection*{5. Challenge Comment}
+\vspace{-0.5em}
+\includegraphics[width=\linewidth]{5.challenge comment.png}
+
+
+
+
+\begin{thebibliography}{00}
+\bibitem{b1} Samsung SmartThings Energy. Available: \url{https://www.smartthings.com/energy}
+\bibitem{b2} Strive App. Available: \url{https://www.striveapp.com}
+\bibitem{b3} FamilyAlbum by Mixi. Available: \url{https://family-album.com/}
+\bibitem{b4} Li, L., Chu, W., Langford, J., \& Schapire, R. E. (2010). 
+A contextual-bandit approach to personalized news article recommendation. 
+Proceedings of the 19th International Conference on World Wide Web (WWW 2010), 661–670. 
+Available: \url{https://doi.org/10.1145/1772690.1772758}
+\end{thebibliography}
+\end{document}
